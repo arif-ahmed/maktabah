@@ -27,14 +27,31 @@ namespace Catalog.API.Controllers
         }
         public IActionResult Post([FromBody] Book book)
         {
+            _context.Books.Add(book);
+            _context.SaveChanges();
             return Ok();
         }
         public IActionResult Put(Guid id, [FromBody] Book book)
         {
+            if (id != book.Id)
+            {
+                return BadRequest();
+            }
+            var existingBook = _context.Books.Find(id);
+            if (existingBook == null)
+            {
+                return NotFound();
+            }
             return Ok();
         }
         public IActionResult Delete(Guid id) 
         {
+            var book = _context.Books.Find(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            _context.Books.Remove(book);
             return Ok();
         }
     }
